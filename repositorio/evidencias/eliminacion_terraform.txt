@@ -1,0 +1,242 @@
+aws_glue_catalog_database.mensajeria: Refreshing state... [id=942049394345:mensajeria_db]
+aws_s3_bucket.datos: Refreshing state... [id=entregas-mensajeria-victor-2026]
+aws_s3_bucket_public_access_block.datos: Refreshing state... [id=entregas-mensajeria-victor-2026]
+aws_athena_workgroup.mensajeria: Refreshing state... [id=wg-mensajeria]
+aws_glue_catalog_table.entregas: Refreshing state... [id=942049394345:mensajeria_db:entregas]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_athena_workgroup.mensajeria will be destroyed
+  - resource "aws_athena_workgroup" "mensajeria" {
+      - arn           = "arn:aws:athena:us-east-1:942049394345:workgroup/wg-mensajeria" -> null
+      - description   = "Workgroup del ejercicio de partition projection." -> null
+      - force_destroy = true -> null
+      - id            = "wg-mensajeria" -> null
+      - name          = "wg-mensajeria" -> null
+      - region        = "us-east-1" -> null
+      - state         = "ENABLED" -> null
+      - tags          = {} -> null
+      - tags_all      = {
+          - "Proyecto" = "entregas-partition-projection"
+        } -> null
+
+      - configuration {
+          - bytes_scanned_cutoff_per_query          = 0 -> null
+          - enable_minimum_encryption_configuration = false -> null
+          - enforce_workgroup_configuration         = true -> null
+          - publish_cloudwatch_metrics_enabled      = false -> null
+          - requester_pays_enabled                  = false -> null
+            # (1 unchanged attribute hidden)
+
+          - engine_version {
+              - effective_engine_version = "Athena engine version 3" -> null
+              - selected_engine_version  = "AUTO" -> null
+            }
+
+          - result_configuration {
+              - output_location       = "s3://entregas-mensajeria-victor-2026/resultados-athena/" -> null
+                # (1 unchanged attribute hidden)
+
+              - encryption_configuration {
+                  - encryption_option = "SSE_S3" -> null
+                    # (1 unchanged attribute hidden)
+                }
+            }
+        }
+    }
+
+  # aws_glue_catalog_database.mensajeria will be destroyed
+  - resource "aws_glue_catalog_database" "mensajeria" {
+      - arn          = "arn:aws:glue:us-east-1:942049394345:database/mensajeria_db" -> null
+      - catalog_id   = "942049394345" -> null
+      - description  = "Base de datos del ejercicio de intentos de entrega." -> null
+      - id           = "942049394345:mensajeria_db" -> null
+      - name         = "mensajeria_db" -> null
+      - parameters   = {} -> null
+      - region       = "us-east-1" -> null
+      - tags         = {} -> null
+      - tags_all     = {
+          - "Proyecto" = "entregas-partition-projection"
+        } -> null
+        # (1 unchanged attribute hidden)
+
+      - create_table_default_permission {
+          - permissions = [
+              - "ALL",
+            ] -> null
+
+          - principal {
+              - data_lake_principal_identifier = "IAM_ALLOWED_PRINCIPALS" -> null
+            }
+        }
+    }
+
+  # aws_glue_catalog_table.entregas will be destroyed
+  - resource "aws_glue_catalog_table" "entregas" {
+      - arn                = "arn:aws:glue:us-east-1:942049394345:table/mensajeria_db/entregas" -> null
+      - catalog_id         = "942049394345" -> null
+      - database_name      = "mensajeria_db" -> null
+      - description        = "Intentos de entrega en CSV, particionados por fecha mediante partition projection." -> null
+      - id                 = "942049394345:mensajeria_db:entregas" -> null
+      - name               = "entregas" -> null
+      - parameters         = {
+          - "EXTERNAL"                       = "TRUE"
+          - "classification"                 = "csv"
+          - "projection.enabled"             = "true"
+          - "projection.fecha.format"        = "yyyy-MM-dd"
+          - "projection.fecha.interval"      = "1"
+          - "projection.fecha.interval.unit" = "DAYS"
+          - "projection.fecha.range"         = "2026-10-01,2026-10-03"
+          - "projection.fecha.type"          = "date"
+          - "skip.header.line.count"         = "1"
+          - "storage.location.template"      = "s3://entregas-mensajeria-victor-2026/entregas/fecha=${fecha}/"
+        } -> null
+      - region             = "us-east-1" -> null
+      - retention          = 0 -> null
+      - table_type         = "EXTERNAL_TABLE" -> null
+        # (3 unchanged attributes hidden)
+
+      - partition_keys {
+          - comment    = "Fecha del archivo, formato yyyy-MM-dd" -> null
+          - name       = "fecha" -> null
+          - parameters = {} -> null
+          - type       = "string" -> null
+        }
+
+      - storage_descriptor {
+          - additional_locations      = [] -> null
+          - bucket_columns            = [] -> null
+          - compressed                = false -> null
+          - input_format              = "org.apache.hadoop.mapred.TextInputFormat" -> null
+          - location                  = "s3://entregas-mensajeria-victor-2026/entregas/" -> null
+          - number_of_buckets         = 0 -> null
+          - output_format             = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat" -> null
+          - parameters                = {} -> null
+          - stored_as_sub_directories = false -> null
+
+          - columns {
+              - name       = "id_envio" -> null
+              - parameters = {} -> null
+              - type       = "string" -> null
+                # (1 unchanged attribute hidden)
+            }
+          - columns {
+              - name       = "ciudad" -> null
+              - parameters = {} -> null
+              - type       = "string" -> null
+                # (1 unchanged attribute hidden)
+            }
+          - columns {
+              - name       = "transportadora" -> null
+              - parameters = {} -> null
+              - type       = "string" -> null
+                # (1 unchanged attribute hidden)
+            }
+          - columns {
+              - name       = "estado" -> null
+              - parameters = {} -> null
+              - type       = "string" -> null
+                # (1 unchanged attribute hidden)
+            }
+          - columns {
+              - name       = "duracion_minutos" -> null
+              - parameters = {} -> null
+              - type       = "int" -> null
+                # (1 unchanged attribute hidden)
+            }
+
+          - ser_de_info {
+              - name                  = "csv-coma" -> null
+              - parameters            = {
+                  - "field.delim"          = ","
+                  - "serialization.format" = ","
+                } -> null
+              - serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe" -> null
+            }
+        }
+    }
+
+  # aws_s3_bucket.datos will be destroyed
+  - resource "aws_s3_bucket" "datos" {
+      - arn                         = "arn:aws:s3:::entregas-mensajeria-victor-2026" -> null
+      - bucket                      = "entregas-mensajeria-victor-2026" -> null
+      - bucket_domain_name          = "entregas-mensajeria-victor-2026.s3.amazonaws.com" -> null
+      - bucket_namespace            = "global" -> null
+      - bucket_region               = "us-east-1" -> null
+      - bucket_regional_domain_name = "entregas-mensajeria-victor-2026.s3.us-east-1.amazonaws.com" -> null
+      - force_destroy               = false -> null
+      - hosted_zone_id              = "Z3AQBSTGFYJSTF" -> null
+      - id                          = "entregas-mensajeria-victor-2026" -> null
+      - object_lock_enabled         = false -> null
+      - region                      = "us-east-1" -> null
+      - request_payer               = "BucketOwner" -> null
+      - tags                        = {} -> null
+      - tags_all                    = {
+          - "Proyecto" = "entregas-partition-projection"
+        } -> null
+        # (3 unchanged attributes hidden)
+
+      - grant {
+          - id          = "cd9a5d187414dc987e093e62161a7a575165d488e7332b496e792f89e44f1417" -> null
+          - permissions = [
+              - "FULL_CONTROL",
+            ] -> null
+          - type        = "CanonicalUser" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - server_side_encryption_configuration {
+          - rule {
+              - bucket_key_enabled = false -> null
+
+              - apply_server_side_encryption_by_default {
+                  - sse_algorithm     = "AES256" -> null
+                    # (1 unchanged attribute hidden)
+                }
+            }
+        }
+
+      - versioning {
+          - enabled    = false -> null
+          - mfa_delete = false -> null
+        }
+    }
+
+  # aws_s3_bucket_public_access_block.datos will be destroyed
+  - resource "aws_s3_bucket_public_access_block" "datos" {
+      - block_public_acls       = true -> null
+      - block_public_policy     = true -> null
+      - bucket                  = "entregas-mensajeria-victor-2026" -> null
+      - id                      = "entregas-mensajeria-victor-2026" -> null
+      - ignore_public_acls      = true -> null
+      - region                  = "us-east-1" -> null
+      - restrict_public_buckets = true -> null
+    }
+
+Plan: 0 to add, 0 to change, 5 to destroy.
+
+Changes to Outputs:
+  - athena_workgroup            = "wg-mensajeria" -> null
+  - bucket_arn                  = "arn:aws:s3:::entregas-mensajeria-victor-2026" -> null
+  - bucket_nombre               = "entregas-mensajeria-victor-2026" -> null
+  - glue_base_datos             = "mensajeria_db" -> null
+  - glue_tabla                  = "entregas" -> null
+  - region                      = "us-east-1" -> null
+  - ubicacion_entregas          = "s3://entregas-mensajeria-victor-2026/entregas/" -> null
+  - ubicacion_resultados_athena = "s3://entregas-mensajeria-victor-2026/resultados-athena/" -> null
+aws_s3_bucket_public_access_block.datos: Destroying... [id=entregas-mensajeria-victor-2026]
+aws_athena_workgroup.mensajeria: Destroying... [id=wg-mensajeria]
+aws_glue_catalog_table.entregas: Destroying... [id=942049394345:mensajeria_db:entregas]
+aws_athena_workgroup.mensajeria: Destruction complete after 1s
+aws_s3_bucket_public_access_block.datos: Destruction complete after 1s
+aws_glue_catalog_table.entregas: Destruction complete after 1s
+aws_glue_catalog_database.mensajeria: Destroying... [id=942049394345:mensajeria_db]
+aws_s3_bucket.datos: Destroying... [id=entregas-mensajeria-victor-2026]
+aws_glue_catalog_database.mensajeria: Destruction complete after 0s
+aws_s3_bucket.datos: Destruction complete after 0s
+
+Destroy complete! Resources: 5 destroyed.

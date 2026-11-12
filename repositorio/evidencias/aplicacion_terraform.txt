@@ -1,0 +1,218 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_athena_workgroup.mensajeria will be created
+  + resource "aws_athena_workgroup" "mensajeria" {
+      + arn           = (known after apply)
+      + description   = "Workgroup del ejercicio de partition projection."
+      + force_destroy = true
+      + id            = (known after apply)
+      + name          = "wg-mensajeria"
+      + region        = "us-east-1"
+      + state         = "ENABLED"
+      + tags_all      = {
+          + "Proyecto" = "entregas-partition-projection"
+        }
+
+      + configuration {
+          + enable_minimum_encryption_configuration = (known after apply)
+          + enforce_workgroup_configuration         = true
+          + publish_cloudwatch_metrics_enabled      = false
+          + requester_pays_enabled                  = false
+
+          + result_configuration {
+              + output_location = "s3://entregas-mensajeria-victor-2026/resultados-athena/"
+
+              + encryption_configuration {
+                  + encryption_option = "SSE_S3"
+                }
+            }
+        }
+    }
+
+  # aws_glue_catalog_database.mensajeria will be created
+  + resource "aws_glue_catalog_database" "mensajeria" {
+      + arn          = (known after apply)
+      + catalog_id   = (known after apply)
+      + description  = "Base de datos del ejercicio de intentos de entrega."
+      + id           = (known after apply)
+      + location_uri = (known after apply)
+      + name         = "mensajeria_db"
+      + region       = "us-east-1"
+      + tags_all     = {
+          + "Proyecto" = "entregas-partition-projection"
+        }
+
+      + create_table_default_permission (known after apply)
+    }
+
+  # aws_glue_catalog_table.entregas will be created
+  + resource "aws_glue_catalog_table" "entregas" {
+      + arn           = (known after apply)
+      + catalog_id    = (known after apply)
+      + database_name = "mensajeria_db"
+      + description   = "Intentos de entrega en CSV, particionados por fecha mediante partition projection."
+      + id            = (known after apply)
+      + name          = "entregas"
+      + parameters    = {
+          + "EXTERNAL"                       = "TRUE"
+          + "classification"                 = "csv"
+          + "projection.enabled"             = "true"
+          + "projection.fecha.format"        = "yyyy-MM-dd"
+          + "projection.fecha.interval"      = "1"
+          + "projection.fecha.interval.unit" = "DAYS"
+          + "projection.fecha.range"         = "2026-10-01,2026-10-03"
+          + "projection.fecha.type"          = "date"
+          + "skip.header.line.count"         = "1"
+          + "storage.location.template"      = "s3://entregas-mensajeria-victor-2026/entregas/fecha=${fecha}/"
+        }
+      + region        = "us-east-1"
+      + table_type    = "EXTERNAL_TABLE"
+
+      + partition_index (known after apply)
+
+      + partition_keys {
+          + comment = "Fecha del archivo, formato yyyy-MM-dd"
+          + name    = "fecha"
+          + type    = "string"
+        }
+
+      + storage_descriptor {
+          + additional_locations = (known after apply)
+          + bucket_columns       = (known after apply)
+          + input_format         = "org.apache.hadoop.mapred.TextInputFormat"
+          + location             = "s3://entregas-mensajeria-victor-2026/entregas/"
+          + output_format        = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+          + parameters           = (known after apply)
+
+          + columns {
+              + name       = "id_envio"
+              + parameters = (known after apply)
+              + type       = "string"
+            }
+          + columns {
+              + name       = "ciudad"
+              + parameters = (known after apply)
+              + type       = "string"
+            }
+          + columns {
+              + name       = "transportadora"
+              + parameters = (known after apply)
+              + type       = "string"
+            }
+          + columns {
+              + name       = "estado"
+              + parameters = (known after apply)
+              + type       = "string"
+            }
+          + columns {
+              + name       = "duracion_minutos"
+              + parameters = (known after apply)
+              + type       = "int"
+            }
+
+          + ser_de_info {
+              + name                  = "csv-coma"
+              + parameters            = {
+                  + "field.delim"          = ","
+                  + "serialization.format" = ","
+                }
+              + serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+            }
+        }
+
+      + view_definition (known after apply)
+    }
+
+  # aws_s3_bucket.datos will be created
+  + resource "aws_s3_bucket" "datos" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = "entregas-mensajeria-victor-2026"
+      + bucket_domain_name          = (known after apply)
+      + bucket_namespace            = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_region               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = "us-east-1"
+      + request_payer               = (known after apply)
+      + tags_all                    = {
+          + "Proyecto" = "entregas-partition-projection"
+        }
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+
+      + cors_rule (known after apply)
+
+      + grant (known after apply)
+
+      + lifecycle_rule (known after apply)
+
+      + logging (known after apply)
+
+      + object_lock_configuration (known after apply)
+
+      + replication_configuration (known after apply)
+
+      + server_side_encryption_configuration (known after apply)
+
+      + versioning (known after apply)
+
+      + website (known after apply)
+    }
+
+  # aws_s3_bucket_public_access_block.datos will be created
+  + resource "aws_s3_bucket_public_access_block" "datos" {
+      + block_public_acls       = true
+      + block_public_policy     = true
+      + bucket                  = (known after apply)
+      + id                      = (known after apply)
+      + ignore_public_acls      = true
+      + region                  = "us-east-1"
+      + restrict_public_buckets = true
+    }
+
+Plan: 5 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + athena_workgroup            = "wg-mensajeria"
+  + bucket_arn                  = (known after apply)
+  + bucket_nombre               = "entregas-mensajeria-victor-2026"
+  + glue_base_datos             = "mensajeria_db"
+  + glue_tabla                  = "entregas"
+  + region                      = "us-east-1"
+  + ubicacion_entregas          = "s3://entregas-mensajeria-victor-2026/entregas/"
+  + ubicacion_resultados_athena = "s3://entregas-mensajeria-victor-2026/resultados-athena/"
+aws_glue_catalog_database.mensajeria: Creating...
+aws_s3_bucket.datos: Creating...
+aws_glue_catalog_database.mensajeria: Creation complete after 3s [id=942049394345:mensajeria_db]
+aws_s3_bucket.datos: Creation complete after 9s [id=entregas-mensajeria-victor-2026]
+aws_s3_bucket_public_access_block.datos: Creating...
+aws_glue_catalog_table.entregas: Creating...
+aws_athena_workgroup.mensajeria: Creating...
+aws_s3_bucket_public_access_block.datos: Creation complete after 0s [id=entregas-mensajeria-victor-2026]
+aws_glue_catalog_table.entregas: Creation complete after 0s [id=942049394345:mensajeria_db:entregas]
+aws_athena_workgroup.mensajeria: Creation complete after 1s [id=wg-mensajeria]
+
+Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+athena_workgroup = "wg-mensajeria"
+bucket_arn = "arn:aws:s3:::entregas-mensajeria-victor-2026"
+bucket_nombre = "entregas-mensajeria-victor-2026"
+glue_base_datos = "mensajeria_db"
+glue_tabla = "entregas"
+region = "us-east-1"
+ubicacion_entregas = "s3://entregas-mensajeria-victor-2026/entregas/"
+ubicacion_resultados_athena = "s3://entregas-mensajeria-victor-2026/resultados-athena/"

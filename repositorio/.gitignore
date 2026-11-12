@@ -1,0 +1,14 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Credenciales
+.aws/
+credentials
+*.pem
+.env
+
+# Sistema
+.DS_Store

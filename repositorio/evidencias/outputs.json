@@ -1,0 +1,42 @@
+{
+  "athena_workgroup": {
+    "sensitive": false,
+    "type": "string",
+    "value": "wg-mensajeria"
+  },
+  "bucket_arn": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:s3:::entregas-mensajeria-victor-2026"
+  },
+  "bucket_nombre": {
+    "sensitive": false,
+    "type": "string",
+    "value": "entregas-mensajeria-victor-2026"
+  },
+  "glue_base_datos": {
+    "sensitive": false,
+    "type": "string",
+    "value": "mensajeria_db"
+  },
+  "glue_tabla": {
+    "sensitive": false,
+    "type": "string",
+    "value": "entregas"
+  },
+  "region": {
+    "sensitive": false,
+    "type": "string",
+    "value": "us-east-1"
+  },
+  "ubicacion_entregas": {
+    "sensitive": false,
+    "type": "string",
+    "value": "s3://entregas-mensajeria-victor-2026/entregas/"
+  },
+  "ubicacion_resultados_athena": {
+    "sensitive": false,
+    "type": "string",
+    "value": "s3://entregas-mensajeria-victor-2026/resultados-athena/"
+  }
+}
